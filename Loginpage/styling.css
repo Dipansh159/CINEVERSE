@@ -1,0 +1,169 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600&display=swap');
+
+
+  /* Inline CSS so no file path issues */
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap');
+
+  :root{ --yellow:#ffd900; --card-bg:rgba(0,0,0,0.62) }
+
+  html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:#0b0b0b;color:#fff;display:flex;align-items:center;justify-content:center}
+  .login-box{width:400px;max-width:92%;background:var(--card-bg);padding:36px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,0.6);text-align:center;}
+  .emoji{font-size:36px;margin-bottom:8px;display:inline-block;animation:float 3s ease-in-out infinite}
+  .title{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--yellow);margin:4px 0 6px;text-transform:uppercase;letter-spacing:2px}
+  .subtitle{font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:18px}
+  h2{font-family:'Bebas Neue',sans-serif;font-size:20px;margin:10px 0 20px;color:#fff}
+  .input-group{ text-align:left;margin-bottom:14px }
+  .input-group label{display:block;font-size:13px;margin-bottom:6px;color:#eee}
+  .input-group input{width:100%;padding:11px;border-radius:8px;border:none;background:rgba(255,255,255,0.07);color:#fff;outline:none}
+  .btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,#ff3850,#ff0054);color:white;font-weight:700;cursor:pointer;margin-top:6px}
+  .tagline{margin-top:18px;font-style:italic;color:rgba(255,255,255,0.7)}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+  .notif{position:fixed;top:18px;right:18px;background:#f5c518;color:#000;padding:8px 12px;border-radius:8px;font-weight:600;opacity:0;transform:translateY(-8px);transition:all .35s}
+  .notif.show{opacity:1;transform:translateY(0)}
+  .small{font-size:12px;color:rgba(0,0,0,0.6);display:block;margin-top:6px}
+
+
+/* Basic reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Page BG (keep your image in images/background.jpg) */
+body, html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+ background: url('./images/background.jpg') no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+/* Container wrapper (if you used .container before) */
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+/* Login box (main card) */
+.login-box {
+  width: 380px;                 /* slightly wider for breathing space */
+  max-width: calc(100% - 40px);
+  background: rgba(0,0,0,0.62);
+  padding: 40px 42px;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.6), 0 0 30px rgba(255,217,0,0.06);
+  text-align: center;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* hover pop */
+.login-box:hover { transform: translateY(-4px); box-shadow: 0 14px 45px rgba(0,0,0,0.65); }
+
+/* Project title — supports multiple class names */
+.title,
+.cineverse-title,
+.project-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 50px;             /* big headline size */
+  line-height: 1;
+  letter-spacing: 2.5px;
+  color: #fff;
+  margin: 0 auto 6px auto;     /* small gap under title */
+  text-shadow: 0 0 10px rgba(246,229,141,0.95);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  animation: titleIntro 900ms cubic-bezier(.2,.9,.2,1) 600ms forwards;
+  text-align: center;
+  max-width: 100%;
+  word-break: keep-all;
+}
+
+/* subtitle placed close under title */
+.subtitle,
+.project-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12.5px;
+  color: rgba(255, 238, 0, 0.903);
+  margin-top: 2px;
+  margin-bottom: 16px;       /* small, tight spacing under subtitle */
+  opacity: 0;
+ 
+  animation: subtitleIntro 900ms ease 950ms forwards;
+}
+
+
+/* Inputs layout */
+.input-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+}
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  outline: none;
+  font-size: 14px;
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+.input-group input::placeholder { color: rgba(255,255,255,0.52); }
+.input-group input:focus { background: rgba(255,255,255,0.12); box-shadow: 0 4px 18px rgba(255,217,0,0.08); }
+
+/* Button */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 9px;
+  border: none;
+  background: linear-gradient(90deg,#ffd900,#f6e58d);
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+  box-shadow: 0 6px 18px rgba(255,217,0,0.08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,217,0,0.12); }
+
+/* Tagline */
+.tagline { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.8); font-style: italic; }
+
+/* --- Animations --- */
+@keyframes titleIntro {
+  0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+  60% { opacity: 1; transform: translateY(-4px) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes subtitleIntro {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes emojiIntro {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes emojiFloat {
+  0% { transform: translateY(0) }
+  100% { transform: translateY(-6px) }
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .login-box { padding: 28px 20px; width: calc(100% - 40px); }
+  .title, .cineverse-title, .project-title { font-size: 34px; letter-spacing: 1.6px; }
+  .subtitle { font-size: 12px; }
+  h2 { font-size: 18px; margin-bottom: 16px; }
+}

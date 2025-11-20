@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CineVerse — Login (test)</title>
+<link rel="stylesheet" href="styling.css">
+
+
+
+<!-- EmailJS script -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+
+<script>
+  // === EmailJS init - REPLACE with your PUBLIC KEY (NOT service id) ===
+  // Get your public key from EmailJS dashboard -> Account -> API Keys
+  // Example: emailjs.init("NvJas8asYXHHD7s92");
+  document.addEventListener("DOMContentLoaded", function(){
+    try {
+      emailjs.init("2solntWaqOMNXrNbN");
+    } catch(e) {
+      console.warn("EmailJS init failed:", e);
+    }
+  });
+</script>
+</head>
+<body>
+
+  <div class="login-box">
+    <div class="emoji">🎥</div>
+    <div class="title"><b>CINEVERSE</b></div>
+    <div class="subtitle">AI-powered Storytelling & Emotion Analysis</div>
+
+    <h2>Your Gateway to Cinema</h2>
+
+    <form id="loginForm" autocomplete="off">
+      <div class="input-group">
+        <label for="name">Username</label>
+        <input id="name" name="name" type="text" placeholder="Enter your name" required>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Enter your password" required>
+      </div>
+
+      <button class="btn" type="submit">Login</button>
+     
+    </form>
+
+    <p class="tagline">“Lights. Camera. Imagination.”</p>
+  </div>
+
+  <div id="notif" class="notif" role="status" aria-live="polite"></div>
+
+<script>
+  const SERVICE_ID = "service_dip123";
+  const TEMPLATE_ID = "template_dip123";
+
+  function showNotif(text, timeout = 3500) {
+    const n = document.getElementById('notif');
+    n.textContent = text;
+    n.classList.add('show');
+    if (timeout > 0)
+      setTimeout(() => n.classList.remove('show'), timeout);
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!name || !email || !password) {
+      showNotif("Please fill all fields.", 2500);
+      return;
+    }
+
+    // Save user locally
+    localStorage.setItem("cineverseUser", JSON.stringify({ name, email }));
+
+    const templateParams = {
+      user_name: name,
+      user_email: email,
+      user_message: "Welcome to CineVerse — thanks for logging in!"
+    };
+
+    // Always redirect after a short delay
+    const goHome = () => {
+      window.location.href = "../Home_Page/index_home.html";
+    };
+
+    // Send email
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+      .then(() => {
+        showNotif("Welcome email sent ✔");
+        setTimeout(goHome, 900);
+      })
+      .catch(err => {
+        console.error("EmailJS error:", err);
+        showNotif("Email failed to send. Redirecting...", 2000);
+        setTimeout(goHome, 900);
+      });
+  });
+</script>
+
+</body>
+</html>

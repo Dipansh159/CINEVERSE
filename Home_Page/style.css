@@ -1,0 +1,191 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  background-color: #000;
+}
+
+/* ----- Video Banner ----- */
+.video-header {
+  position: relative;
+  width: 100%;
+  height: 35vh; /* banner height */
+  overflow: hidden;
+}
+
+#bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ----- Navigation Bar ----- */
+.navbar {
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 80px;
+  z-index: 10;
+  position: relative;
+}
+
+/* ----- NAV SEARCH (with icon) ----- */
+.nav-search {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-search input {
+  padding: 8px 35px 8px 14px; /* add right padding for icon */
+  width: 260px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Add search icon inside input */
+.nav-search::after {
+  content: "\f002"; /* Font Awesome search icon */
+  font-family: "Font Awesome 6 Free"; /* ensure FA6 is loaded in HTML */
+  font-weight: 900;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none; /* allows typing without blocking input */
+  font-size: 14px;
+}
+
+/* RIGHT MENU */
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+/* ---- Search Suggestion Box ---- */
+.nav-search { position: relative; 
+display: inline-block; }
+
+.suggest-box {
+  position: absolute;
+  top: 38px;         /* place under the input (adjust if you changed input height) */
+  left: 0;
+  background: #111;
+  color: #fff;
+  width: 260px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #333;
+  margin-top: 6px;
+  border-radius: 5px;
+  display: none;
+  z-index: 99999;
+}
+
+.suggest-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #222;
+}
+
+.suggest-item:hover {
+  background: #333;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #f5c518;
+}
+
+/* --- Cineverse Title (Logo) --- */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap');
+
+.hero {
+  position: relative; /* important for positioning */
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #e5e5e5;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #ffcc00;
+}
+
+/* ----- Content Section ----- */
+.content {
+  text-align: center;
+  margin-top: 45vh;
+  padding: 60px;
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+.content h1 {
+  font-size: 2rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+#welcome-toast {
+  position: fixed;
+  top: 80px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  font-weight: 500;
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(-10px);
+  z-index: 9999;
+}
+
+#welcome-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#welcome-toast.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+}

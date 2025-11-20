@@ -1,0 +1,6 @@
+Flask
+Flask-SQLAlchemy
+python-dotenv
+requests
+cd backend
+python -m pip install -r requirements.txt

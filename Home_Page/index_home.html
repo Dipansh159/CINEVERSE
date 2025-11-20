@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineVerse</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: #000; color: #fff; overflow-x: hidden; }
+
+    /* HERO VIDEO */
+    .hero { position: relative; width: 100%; height: 75vh; overflow: hidden; }
+    .hero video { width: 100%; height: 100%; object-fit: cover; }
+
+    .cineverse-title {
+      position: absolute; top: 25px; left: 60px;
+      font-size: 64px; font-family: 'Bebas Neue', sans-serif;
+      font-weight: 700; letter-spacing: 2px; color: #fff;
+      animation: fadeInCineverse 1.5s ease forwards;
+      z-index: 10;
+    }
+
+    @keyframes fadeInCineverse {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    nav {
+      display: flex; justify-content: right; gap: 40px;
+      padding: 20px 60px; position: relative; z-index: 5;
+    }
+
+    .nav-links { display: flex; gap: 30px; }
+    .nav-links a { color: #fff; text-decoration: none; font-size: 16px; transition: 0.3s; }
+    .nav-links a:hover { color: #f5c518; }
+
+    /* POSTERS GRID */
+    .movies-section { padding: 60px; text-align: center; }
+
+    .poster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px; justify-items: center;
+    }
+
+    .poster { width: 200px; transition: 0.3s; }
+    .poster img { width: 100%; height: 300px; object-fit: cover; border-radius: 5px; }
+    .poster:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(245,197,24,0.3); }
+
+    .poster-title { margin-top: 10px; font-size: 16px; color: #fff; }
+
+    /* SEARCH dropdown */
+    .nav-search { position: relative; }
+    #movieSearch {
+      padding: 8px 12px; border-radius: 4px; width: 220px;
+      border: none; outline: none;
+    }
+    .suggest-box {
+      position: absolute; top: 42px; left: 0;
+      background: #111; width: 100%;
+      border: 1px solid #333; display: none; z-index: 100;
+    }
+    .suggest-item {
+      padding: 10px; cursor: pointer;
+      transition: 0.2s; color: #fff;
+    }
+    .suggest-item:hover { background: #222; }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO VIDEO -->
+  <div class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="/video/cine_video.mp4" type="video/mp4">
+    </video>
+    <div class="cineverse-title">CineVerse</div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-search">
+      <input type="text" id="movieSearch" placeholder="Search movies..." />
+      <div id="suggestions" class="suggest-box"></div>
+    </div>
+
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Chatbot</a>
+      <a href="#">Movies</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+
+  <!-- MOVIES -->
+  <section class="movies-section">
+    <div class="poster-grid" id="posterGrid"></div>
+  </section>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  let cachedMovies = [];
+  const cacheFile = "movies_cache.json";
+
+  const searchInput = document.getElementById("movieSearch");
+  const suggestions = document.getElementById("suggestions");
+  let searchTimeout;
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!document.querySelector(".nav-search").contains(e.target)) {
+      suggestions.innerHTML = "";
+      suggestions.style.display = "none";
+    }
+  });
+
+  // Load cached movies
+  fetch(cacheFile)
+    .then(res => res.json())
+    .then(data => {
+      cachedMovies = data;
+      renderMovies(data);
+    })
+    .catch(err => console.log("Cache load failed:", err));
+
+  // Search logic
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+      const q = searchInput.value.trim().toLowerCase();
+
+      if (q.length < 1) {
+        suggestions.innerHTML = "";
+        suggestions.style.display = "none";
+        renderMovies(cachedMovies);
+        return;
+      }
+
+      const results = fuzzySearchMovies(q);
+
+      showSuggestions(results);
+      renderMovies(results);
+    }, 250);
+  });
+
+  // Fuzzy search algorithm
+  function fuzzySearchMovies(query) {
+    return cachedMovies.filter(m => {
+      const title = m.title.toLowerCase();
+      if (title.includes(query)) return true;
+
+      return levenshteinDistance(title, query) <= 3;
+    });
+  }
+
+  // Levenshtein distance
+  function levenshteinDistance(a, b) {
+    const matrix = Array.from({ length: a.length + 1 }, () => []);
+
+    for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        );
+      }
+    }
+
+    return matrix[a.length][b.length];
+  }
+
+  // Render movies
+  function renderMovies(list) {
+    list = list.sort(() => Math.random() - 0.5);
+
+    const grid = document.getElementById("posterGrid");
+    grid.innerHTML = "";
+
+    list.forEach(m => {
+      const poster = m.poster_url || "placeholder.jpg";
+      const year = m.release_date ? m.release_date.slice(0, 4) : "N/A";
+
+      const div = document.createElement("div");
+      div.className = "poster";
+      div.innerHTML = `
+        <img src="${poster}" onerror="this.src='placeholder.jpg'">
+        <div class="poster-title">${m.title} (${year})</div>
+      `;
+
+      div.onclick = () => alert(m.title);
+      grid.appendChild(div);
+    });
+  }
+
+  // Suggestions dropdown
+  function showSuggestions(list) {
+    suggestions.innerHTML = "";
+    suggestions.style.display = "block";
+
+    list.slice(0, 10).forEach(m => {
+      const year = m.release_date ? m.release_date.slice(0, 4) : "N/A";
+
+      const div = document.createElement("div");
+      div.className = "suggest-item";
+      div.textContent = `${m.title} (${year})`;
+
+      div.onclick = () => {
+        renderMovies([m]);
+        suggestions.innerHTML = "";
+        suggestions.style.display = "none";
+      };
+
+      suggestions.appendChild(div);
+    });
+  }
+
+});
+</script>
+
+</body>
+</html>
