@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Movies • CineVerse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Bebas+Neue&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #050505;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    .navbar a:hover,
+    .navbar a.active {
+      color: #f5c518;
+      text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    }
+
+    .container {
+      padding: 40px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 60px;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #f5c518, #ff6b6b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #aaa;
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 40px 0 20px;
+      padding-left: 15px;
+      border-left: 5px solid #f5c518;
+    }
+
+    .movie-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: #f5c518 #222;
+    }
+
+    .movie-row::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .movie-row::-webkit-scrollbar-track {
+      background: #222;
+      border-radius: 4px;
+    }
+
+    .movie-row::-webkit-scrollbar-thumb {
+      background: #f5c518;
+      border-radius: 4px;
+    }
+
+    .movie-card {
+      min-width: 200px;
+      max-width: 200px;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(245, 197, 24, 0.3);
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s;
+    }
+
+    .movie-card:hover img {
+      opacity: 0.8;
+    }
+
+    .card-title {
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .message {
+      color: #ff6b6b;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index_home.html">Home</a>
+    <a href="http://localhost:5173/">MoodMatcher</a>
+    <a href="about.html">About</a>
+    <a href="chat.html">Chatbot</a>
+    <a href="movies.html">Movies</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main class="container">
+    <h1>Explore Movies</h1>
+    <p class="subtitle">Swipe through curated collections of trending and greatest films.</p>
+
+    <h2 class="section-title" style="border-color: #ff6b6b;">Trending This Week</h2>
+    <div class="movie-row" id="rowTrending"></div>
+
+    <h2 class="section-title" style="border-color: #4facfe;">Top 150 Highest Rated</h2>
+    <div class="movie-row" id="rowRated"></div>
+
+    <h2 class="section-title" style="border-color: #cab605;">IMDb Top 150 (Curated)</h2>
+    <div class="movie-row" id="rowImdb"></div>
+  </main>
+
+  <script>
+    const posterBase = "https://image.tmdb.org/t/p/w500";
+
+    function buildCard(m) {
+      const targetUrl = m.tmdb_id ? `movie.html?tmdb_id=${m.tmdb_id}` : `movie.html?title=${encodeURIComponent(m.title)}&year=${m.release_date ? m.release_date.slice(0, 4) : ''}`;
+      return `
+    <div class="movie-card">
+      <a href="${targetUrl}" style="text-decoration:none; color:inherit;">
+        <img src="${m.poster_url || (m.poster_path ? posterBase + m.poster_path : 'placeholder.jpg')}" onerror="this.src='placeholder.jpg'">
+        <div class="card-title" title="${m.title || m.name}">${m.title || m.name}</div>
+      </a>
+    </div>
+  `;
+    }
+
+    // TMDB API KEY
+    const TMDB_API_KEY = "d4ded1dcd06236100cb440817a7363ae";
+
+    // Helper for fetch with timeout
+    async function fetchWithTimeout(resource, options = {}) {
+      const { timeout = 3000 } = options;
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      const response = await fetch(resource, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(id);
+      return response;
+    }
+
+    async function loadStrip(apiUrl, elementId, limit, cacheStart, cacheEnd) {
+      const row = document.getElementById(elementId);
+      try {
+        const res = await fetchWithTimeout(apiUrl, { timeout: 3000 });
+        if (!res.ok) throw new Error("TMDB fetch failed");
+        const data = await res.json();
+
+        row.innerHTML = '';
+        if (data.results && data.results.length > 0) {
+          data.results.slice(0, limit).forEach(m => {
+            row.innerHTML += buildCard(m);
+          });
+        } else {
+          // TMDB is blocked by ISP. Fallback to local cache slices
+          const cacheRes = await fetch('movies_cache.json');
+          const cache = await cacheRes.json();
+          cache.slice(cacheStart, cacheEnd).forEach(m => {
+            row.innerHTML += buildCard(m);
+          });
+
+          if (!window.warnedTMDB) {
+            console.warn("TMDB API is blocked by your network/ISP. Using offline cache.");
+            window.warnedTMDB = true;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading strip:", err);
+        if (row) row.innerHTML = '<p class="message">Could not load movies. Please check your internet connection.</p>';
+      }
+    }
+
+    loadStrip(`http://127.0.0.1:5000/api/section/trending`, "rowTrending", 15, 0, 15);
+    loadStrip(`http://127.0.0.1:5000/api/section/top_rated`, "rowRated", 15, 15, 30);
+    loadStrip(`http://127.0.0.1:5000/api/section/popular`, "rowPopular", 15, 30, 45);
+    loadStrip(`http://127.0.0.1:5000/api/section/imdb_top`, "rowImdb", 15, 45, 60);
+  </script>
+
+</body>
+
+</html>

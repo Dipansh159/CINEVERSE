@@ -1,238 +1,545 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CineVerse</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Bebas+Neue&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    body { background-color: #000; color: #fff; overflow-x: hidden; }
+    /* minimal page CSS (keeps your original look) */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-    /* HERO VIDEO */
-    .hero { position: relative; width: 100%; height: 75vh; overflow: hidden; }
-    .hero video { width: 100%; height: 100%; object-fit: cover; }
+    html,
+    body {
+      height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 75vh;
+      overflow: hidden
+    }
+
+    /* reduced height so nav sits below */
+    #bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
 
     .cineverse-title {
-      position: absolute; top: 25px; left: 60px;
-      font-size: 64px; font-family: 'Bebas Neue', sans-serif;
-      font-weight: 700; letter-spacing: 2px; color: #fff;
-      animation: fadeInCineverse 1.5s ease forwards;
-      z-index: 10;
+      position: absolute;
+      top: 18px;
+      left: 40px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      z-index: 10
     }
 
-    @keyframes fadeInCineverse {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+    nav.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 60px;
+      position: relative;
+      z-index: 5;
+      background: #000
     }
 
-    nav {
-      display: flex; justify-content: right; gap: 40px;
-      padding: 20px 60px; position: relative; z-index: 5;
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px
     }
 
-    .nav-links { display: flex; gap: 30px; }
-    .nav-links a { color: #fff; text-decoration: none; font-size: 16px; transition: 0.3s; }
-    .nav-links a:hover { color: #f5c518; }
-
-    /* POSTERS GRID */
-    .movies-section { padding: 60px; text-align: center; }
-
-    .poster-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 25px; justify-items: center;
+    .nav-search {
+      position: relative
     }
 
-    .poster { width: 200px; transition: 0.3s; }
-    .poster img { width: 100%; height: 300px; object-fit: cover; border-radius: 5px; }
-    .poster:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(245,197,24,0.3); }
-
-    .poster-title { margin-top: 10px; font-size: 16px; color: #fff; }
-
-    /* SEARCH dropdown */
-    .nav-search { position: relative; }
-    #movieSearch {
-      padding: 8px 12px; border-radius: 4px; width: 220px;
-      border: none; outline: none;
+    .nav-search input {
+      padding: 8px 34px 8px 12px;
+      width: 320px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6)
     }
+
+    .nav-search::after {
+      content: "\f002";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      pointer-events: none
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px
+    }
+
+    .nav-links a:hover {
+      color: #f5c518
+    }
+
     .suggest-box {
-      position: absolute; top: 42px; left: 0;
-      background: #111; width: 100%;
-      border: 1px solid #333; display: none; z-index: 100;
+      position: absolute;
+      top: 46px;
+      left: 0;
+      width: 360px;
+      max-height: 320px;
+      overflow: auto;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      display: none;
+      z-index: 999
     }
-    .suggest-item {
-      padding: 10px; cursor: pointer;
-      transition: 0.2s; color: #fff;
-    }
-    .suggest-item:hover { background: #222; }
 
+    .suggest-item {
+      padding: 10px;
+      cursor: pointer;
+      color: #fff;
+      border-bottom: 1px solid #222
+    }
+
+    .suggest-item:hover {
+      background: #222
+    }
+
+    .movies-section {
+      padding: 36px 60px 80px;
+      min-height: 40vh
+    }
+
+    #posterGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 28px;
+      align-items: start;
+      justify-items: center;
+      padding: 12px 0
+    }
+
+    .poster {
+      width: 100%;
+      max-width: 220px;
+      cursor: pointer
+    }
+
+    .poster a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #111, #000);
+      display: block;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6)
+    }
+
+    .poster-title {
+      margin-top: 8px;
+      font-size: 14px;
+      text-align: center;
+      color: #fff
+    }
+
+    .pagination {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 28px;
+      flex-wrap: wrap
+    }
+
+    .page-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer
+    }
+
+    .page-btn.active {
+      background: #f5c518;
+      color: #111;
+      font-weight: 700;
+      border-color: #f5c518
+    }
+
+    .message {
+      text-align: center;
+      color: #bbb;
+      margin-top: 40px;
+      font-size: 15px
+    }
+
+    .backend-note {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #222;
+      color: #ffd;
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      opacity: 0.9;
+      z-index: 9999
+    }
+
+    @media(max-width:700px) {
+      .cineverse-title {
+        left: 20px;
+        font-size: 44px
+      }
+
+      .nav-search input {
+        width: 200px
+      }
+
+      .poster img {
+        height: 220px
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- HERO VIDEO -->
   <div class="hero">
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline id="bg-video">
       <source src="/video/cine_video.mp4" type="video/mp4">
     </video>
     <div class="cineverse-title">CineVerse</div>
   </div>
 
-  <!-- NAV -->
-  <nav class="navbar">
-    <div class="nav-search">
-      <input type="text" id="movieSearch" placeholder="Search movies..." />
-      <div id="suggestions" class="suggest-box"></div>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="nav-left">
+      <div class="nav-search" role="search">
+        <input id="movieSearch" type="text" placeholder="Search movies..." autocomplete="off"
+          aria-label="Search movies" />
+        <div id="suggestions" class="suggest-box" role="listbox" aria-hidden="true"></div>
+      </div>
     </div>
 
-    <div class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Chatbot</a>
-      <a href="#">Movies</a>
-      <a href="#">Contact</a>
+    <div class="nav-links" role="navigation" aria-label="Primary">
+      <a href="index_home.html">Home</a>
+      <a href="http://localhost:5173/">MoodMatcher</a>
+      <a href="about.html">About</a>
+      <a href="chat.html">Chatbot</a>
+      <a href="movies.html">Movies</a>
+      <a href="contact.html">Contact</a>
     </div>
   </nav>
 
-  <!-- MOVIES -->
   <section class="movies-section">
-    <div class="poster-grid" id="posterGrid"></div>
+    <div id="posterGrid" class="poster-grid" aria-live="polite"></div>
+    <div id="pagination" class="pagination" aria-label="Pagination controls"></div>
+    <div id="statusMessage" class="message" role="status"></div>
   </section>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+  <script>
+    /*
+      Homepage behavior:
+      - Loads movies_cache.json into `cachedMovies`
+      - Search: try backend (if available) else fuzzy search on cache
+      - Clicking a poster navigates to movie.html?tmdb_id=... (falls back to title/year when necessary)
+    */
 
-  let cachedMovies = [];
-  const cacheFile = "movies_cache.json";
+    document.addEventListener('DOMContentLoaded', () => {
+      const PAGE_SIZE = 30;
+      const CACHE_FILE = 'movies_cache.json';
+      const TMDB_API_KEY = 'd4ded1dcd06236100cb440817a7363ae';
+      const TMDB_SEARCH = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=en-US&include_adult=false&query=`;
 
-  const searchInput = document.getElementById("movieSearch");
-  const suggestions = document.getElementById("suggestions");
-  let searchTimeout;
+      const searchInput = document.getElementById('movieSearch');
+      const suggestions = document.getElementById('suggestions');
+      const grid = document.getElementById('posterGrid');
+      const pagination = document.getElementById('pagination');
+      const statusMessage = document.getElementById('statusMessage');
 
-  // Close dropdown when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!document.querySelector(".nav-search").contains(e.target)) {
-      suggestions.innerHTML = "";
-      suggestions.style.display = "none";
-    }
-  });
+      let cachedMovies = [];
+      let currentPage = getPageFromURL();
+      let inSearchMode = false;
 
-  // Load cached movies
-  fetch(cacheFile)
-    .then(res => res.json())
-    .then(data => {
-      cachedMovies = data;
-      renderMovies(data);
-    })
-    .catch(err => console.log("Cache load failed:", err));
+      fetch(CACHE_FILE)
+        .then(r => r.json())
+        .then(data => { cachedMovies = Array.isArray(data) ? data : []; shuffle(cachedMovies); renderPage(currentPage); })
+        .catch(err => { console.error('Cache load failed', err); statusMessage.textContent = 'Could not load movies — check movies_cache.json'; });
 
-  // Search logic
-  searchInput.addEventListener("input", () => {
-    clearTimeout(searchTimeout);
-
-    searchTimeout = setTimeout(() => {
-      const q = searchInput.value.trim().toLowerCase();
-
-      if (q.length < 1) {
-        suggestions.innerHTML = "";
-        suggestions.style.display = "none";
-        renderMovies(cachedMovies);
-        return;
+      function renderPage(page) {
+        if (!cachedMovies.length) return;
+        const totalPages = Math.ceil(cachedMovies.length / PAGE_SIZE);
+        currentPage = Math.min(Math.max(page || 1, 1), totalPages);
+        updateURLPage(currentPage);
+        inSearchMode = false;
+        statusMessage.textContent = '';
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const pageList = cachedMovies.slice(start, start + PAGE_SIZE);
+        renderGrid(pageList);
+        renderPagination(totalPages);
       }
 
-      const results = fuzzySearchMovies(q);
-
-      showSuggestions(results);
-      renderMovies(results);
-    }, 250);
-  });
-
-  // Fuzzy search algorithm
-  function fuzzySearchMovies(query) {
-    return cachedMovies.filter(m => {
-      const title = m.title.toLowerCase();
-      if (title.includes(query)) return true;
-
-      return levenshteinDistance(title, query) <= 3;
-    });
-  }
-
-  // Levenshtein distance
-  function levenshteinDistance(a, b) {
-    const matrix = Array.from({ length: a.length + 1 }, () => []);
-
-    for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-
-    for (let i = 1; i <= a.length; i++) {
-      for (let j = 1; j <= b.length; j++) {
-        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + cost
-        );
+      function renderGrid(list) {
+        grid.innerHTML = '';
+        if (!list || !list.length) {
+          grid.innerHTML = '<p class="message">No movies to show.</p>';
+          pagination.innerHTML = '';
+          return;
+        }
+        list.forEach(m => {
+          const poster = m.poster_url || 'placeholder.jpg';
+          const year = m.release_date ? (m.release_date.slice(0, 4)) : 'N/A';
+          const el = document.createElement('div');
+          el.className = 'poster';
+          // Use an <a> so middle-click / open-in-new-tab works and SEO/UX is better
+          // link by tmdb_id now; fallback to title/year if id missing
+          const targetUrl = m.tmdb_id
+            ? `movie.html?tmdb_id=${m.tmdb_id}`
+            : `movie.html?title=${encodeURIComponent(m.title || '')}&year=${encodeURIComponent(year)}`;
+          el.innerHTML = `<a href="${targetUrl}" title="${escapeHtml(m.title || 'Untitled')}">
+          <img src="${escapeHtml(poster)}" alt="${escapeHtml(m.title || '')}" loading="lazy" onerror="this.src='placeholder.jpg'">
+          <div class="poster-title">${escapeHtml(m.title || 'Untitled')} (${year})</div>
+        </a>`;
+          grid.appendChild(el);
+        });
       }
-    }
 
-    return matrix[a.length][b.length];
-  }
+      function renderPagination(totalPages) {
+        pagination.innerHTML = '';
+        if (inSearchMode || totalPages <= 1) return;
+        const windowSize = 5;
+        let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
+        let end = Math.min(totalPages, start + windowSize - 1);
+        if (end - start < windowSize - 1) start = Math.max(1, end - windowSize + 1);
 
-  // Render movies
-  function renderMovies(list) {
-    list = list.sort(() => Math.random() - 0.5);
+        const mk = (label, p, disabled = false, active = false) => {
+          const btn = document.createElement('button');
+          btn.className = 'page-btn' + (active ? ' active' : '');
+          btn.textContent = label;
+          if (!disabled) btn.onclick = () => { renderPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+          else { btn.style.opacity = 0.45; btn.disabled = true; }
+          return btn;
+        };
 
-    const grid = document.getElementById("posterGrid");
-    grid.innerHTML = "";
+        pagination.appendChild(mk('«', 1, currentPage === 1));
+        pagination.appendChild(mk('‹', currentPage - 1, currentPage === 1));
+        for (let p = start; p <= end; p++) pagination.appendChild(mk(String(p), p, false, p === currentPage));
+        pagination.appendChild(mk('›', currentPage + 1, currentPage === totalPages));
+        pagination.appendChild(mk('»', totalPages, currentPage === totalPages));
+      }
 
-    list.forEach(m => {
-      const poster = m.poster_url || "placeholder.jpg";
-      const year = m.release_date ? m.release_date.slice(0, 4) : "N/A";
+      // Search handling (backend fallback to cache)
+      let searchTimer;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(async () => {
+          const q = searchInput.value.trim();
+          if (!q) { suggestions.innerHTML = ''; suggestions.style.display = 'none'; inSearchMode = false; renderPage(getPageFromURL()); return; }
 
-      const div = document.createElement("div");
-      div.className = "poster";
-      div.innerHTML = `
-        <img src="${poster}" onerror="this.src='placeholder.jpg'">
-        <div class="poster-title">${m.title} (${year})</div>
-      `;
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const res = await fetch(`http://127.0.0.1:5000/api/search?q=${encodeURIComponent(q)}`, {
+              cache: 'no-store',
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error('backend search not ok');
+            const json = await res.json();
+            const results = Array.isArray(json.results) ? json.results : [];
+            showSuggestions(results.slice(0, 10));
+            renderSearchResults(results);
+            return;
+          } catch (err) {
+            // fallback to fuzzy search on cache
+            const results = fuzzySearch(q);
+            showSuggestions(results.slice(0, 10));
+            renderSearchResults(results);
+            return;
+          }
+        }, 220);
+      });
 
-      div.onclick = () => alert(m.title);
-      grid.appendChild(div);
-    });
-  }
+      function renderSearchResults(list) {
+        inSearchMode = true;
+        if (!list || !list.length) { grid.innerHTML = '<p class="message">No results found.</p>'; pagination.innerHTML = ''; return; }
+        renderGrid(list.slice(0, 200));
+        pagination.innerHTML = '';
+      }
 
-  // Suggestions dropdown
-  function showSuggestions(list) {
-    suggestions.innerHTML = "";
-    suggestions.style.display = "block";
+      function showSuggestions(list) {
+        suggestions.innerHTML = '';
+        if (!list || !list.length) { suggestions.style.display = 'none'; return; }
+        list.forEach(m => {
+          const year = m.release_date ? m.release_date.slice(0, 4) : 'N/A';
+          const d = document.createElement('div');
+          d.className = 'suggest-item';
+          d.textContent = `${m.title || m.name || 'Untitled'} (${year})`;
+          d.onclick = () => { searchInput.value = m.title || m.name || ''; suggestions.style.display = 'none'; renderSearchResults([m]); };
+          suggestions.appendChild(d);
+        });
+        suggestions.style.display = 'block';
+      }
 
-    list.slice(0, 10).forEach(m => {
-      const year = m.release_date ? m.release_date.slice(0, 4) : "N/A";
-
-      const div = document.createElement("div");
-      div.className = "suggest-item";
-      div.textContent = `${m.title} (${year})`;
-
-      div.onclick = () => {
-        renderMovies([m]);
-        suggestions.innerHTML = "";
-        suggestions.style.display = "none";
+      // Alias map — common search terms → film keywords found in titles
+      const SEARCH_ALIASES = {
+        'batman': ['dark knight', 'batman'],
+        'dark knight': ['dark knight', 'batman'],
+        'superman': ['superman', 'man of steel', 'steel'],
+        'spiderman': ['spider-man', 'spider man', 'spider-verse', 'spiderman'],
+        'spider man': ['spider-man', 'spider man', 'spider-verse'],
+        'iron man': ['iron man'],
+        'avengers': ['avengers', 'endgame', 'infinity war'],
+        'captain america': ['captain america'],
+        'thor': ['thor'],
+        'hulk': ['hulk', 'incredible hulk'],
+        'joker': ['joker', 'dark knight'],
+        'wonder woman': ['wonder woman'],
+        'aquaman': ['aquaman'],
+        'harry potter': ['harry potter', 'sorcerer', 'philosopher', 'chamber', 'prisoner', 'goblet', 'phoenix', 'half-blood', 'deathly'],
+        'star wars': ['star wars', 'jedi', 'sith', 'skywalker', 'mandalorian', 'rogue one'],
+        'lord of the rings': ['lord of the rings', 'fellowship', 'two towers', 'return of the king'],
+        'hobbit': ['hobbit'],
+        'james bond': ['bond', '007', 'skyfall', 'spectre', 'casino royale', 'no time to die'],
+        'fast furious': ['fast', 'furious'],
+        'john wick': ['john wick'],
+        'mission impossible': ['mission', 'impossible'],
+        'transformers': ['transformers', 'bumblebee'],
+        'pirates': ['pirates', 'caribbean'],
+        'jurassic': ['jurassic', 'park', 'world'],
+        'terminator': ['terminator'],
+        'alien': ['alien', 'aliens', 'prometheus', 'covenant'],
+        'predator': ['predator'],
       };
 
-      suggestions.appendChild(div);
-    });
-  }
+      function getAliasKeywords(q) {
+        const ql = q.toLowerCase().trim();
+        // Direct lookup
+        if (SEARCH_ALIASES[ql]) return SEARCH_ALIASES[ql];
+        // Partial match in alias keys
+        for (const key of Object.keys(SEARCH_ALIASES)) {
+          if (key.includes(ql) || ql.includes(key)) return SEARCH_ALIASES[key];
+        }
+        return [ql];
+      }
 
-});
-</script>
+      // Strip leading "the", "a", "an" for better matching
+      function stripArticle(s) { return s.replace(/^(the|a|an)\s+/i, '').trim(); }
+
+      function fuzzySearch(q) {
+        const ql = q.toLowerCase().trim();
+        const qlStripped = stripArticle(ql);
+        const keywords = getAliasKeywords(ql);
+        const scored = [];
+
+        for (const m of cachedMovies) {
+          const raw = (m.title || m.name || '').toLowerCase();
+          const t = stripArticle(raw);
+          if (!t) continue;
+
+          let score = 0;
+
+          // Exact title match (highest priority)
+          if (raw === ql || t === qlStripped) { score = 100; }
+          // Title starts with query
+          else if (raw.startsWith(ql) || t.startsWith(qlStripped)) { score = 80; }
+          // Title contains query
+          else if (raw.includes(ql) || t.includes(qlStripped)) { score = 60; }
+          else {
+            // Alias keyword matching
+            for (const kw of keywords) {
+              if (raw.includes(kw) || t.includes(kw)) { score = Math.max(score, 50); break; }
+            }
+            // Word-level partial match (each word in query found in title)
+            if (!score) {
+              const qWords = qlStripped.split(/\s+/).filter(w => w.length > 2);
+              const matches = qWords.filter(w => t.includes(w));
+              if (matches.length === qWords.length && qWords.length > 0) score = 40;
+              else if (matches.length > 0) score = 20;
+            }
+            // Levenshtein fallback for short queries
+            if (!score && ql.length <= 12) {
+              const dist = levenshtein(t, qlStripped);
+              if (dist <= Math.max(1, Math.floor(ql.length * 0.35))) score = 10;
+            }
+          }
+
+          if (score > 0) scored.push({ m, score });
+        }
+
+        // Sort by score desc, then title alphabetically
+        scored.sort((a, b) => b.score - a.score || (a.m.title || '').localeCompare(b.m.title || ''));
+        return scored.map(s => s.m);
+      }
+
+      function levenshtein(a, b) {
+        const al = a.length, bl = b.length;
+        if (!al) return bl; if (!bl) return al;
+        const dp = new Array(bl + 1).fill(0).map((_, j) => j);
+        for (let i = 1; i <= al; i++) {
+          let prev = dp[0];
+          dp[0] = i;
+          for (let j = 1; j <= bl; j++) {
+            const tmp = dp[j];
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + cost);
+            prev = tmp;
+          }
+        }
+        return dp[bl];
+      }
+
+      // helpers
+      function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } }
+      function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+      function getPageFromURL() { const p = new URLSearchParams(location.search).get('page'); return p ? Math.max(1, parseInt(p, 10)) : 1 }
+      function updateURLPage(p) { const u = new URL(location); u.searchParams.set('page', p); history.replaceState({}, '', u); }
+
+      // clicking outside suggestions hides it
+      document.addEventListener('click', (e) => {
+        if (!document.querySelector('.nav-search').contains(e.target)) { suggestions.style.display = 'none'; }
+      });
+
+    });
+  </script>
 
 </body>
+
 </html>

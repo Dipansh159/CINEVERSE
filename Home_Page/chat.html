@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat with CineBot
+    - CineVerse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <br>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      gap: 32px;
+      padding: 30px 60px;
+      background: #0d0d0d;
+      border-bottom: 1px solid #222;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      justify-content: center;
+      justify-content: space-between;
+    }
+
+    .navbar a {
+      color: #dca500;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .navbar a:hover,
+    .navbar a.active {
+      color: #f5c518;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      max-width: 900px;
+      margin: 0 auto;
+      height: calc(100vh - 70px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .chat-header {
+      padding: 24px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+
+    }
+
+    .chat-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .chat-header p {
+      color: #888;
+      font-size: 14px;
+    }
+
+    /* Chat Window */
+    .chat-window {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Message Bubbles */
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: #f5c518;
+      color: #000;
+    }
+
+    .message.bot .message-avatar {
+      background: #333;
+      color: #f5c518;
+    }
+
+    .message-content {
+      background: #1a1a1a;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+
+    .message.user .message-content {
+      background: #f5c518;
+      color: #000;
+    }
+
+    .message.bot .message-content {
+      background: #1a1a1a;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* Loading indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 16px;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: #666;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .typing-indicator span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(0);
+      }
+
+      40% {
+        transform: scale(1);
+      }
+    }
+
+    /* Input Area */
+    .input-area {
+      padding: 24px;
+      border-top: 1px solid #222;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 12px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    #userPrompt {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      padding: 12px 16px;
+      resize: none;
+      min-height: 24px;
+      max-height: 120px;
+      font-family: inherit;
+    }
+
+    #userPrompt:focus {
+      outline: none;
+    }
+
+    #userPrompt::placeholder {
+      color: #666;
+    }
+
+    #sendBtn {
+      background: #f5c518;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    #sendBtn:hover:not(:disabled) {
+      background: #e5b518;
+      transform: scale(1.02);
+    }
+
+    #sendBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Suggestions */
+    .suggestions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .suggestion-chip {
+      background: #222;
+      color: #aaa;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid #333;
+      transition: all 0.2s;
+    }
+
+    .suggestion-chip:hover {
+      background: #333;
+      color: #fff;
+      border-color: #f5c518;
+    }
+
+    /* Scrollbar */
+    .chat-window::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-window::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-window::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+
+    .chat-window::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="index_home.html">Home</a>
+    <a href="http://localhost:5173/">MoodMatcher</a>
+    <a href="about.html">About</a>
+    <a href="chat.html">Chatbot</a>
+    <a href="movies.html">Movies</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1><i class="fas fa-robot" style="color: #f5c518; margin-right: 8px;"></i>CineBot</h1>
+      <p>Your AI movie companion. Ask about plots, characters, theories, or "what if" scenarios.</p>
+    </div>
+
+    <div id="chatWindow" class="chat-window">
+      <!-- Welcome message -->
+      <div class="message bot">
+        <div class="message-avatar"><i class="fas fa-robot"></i></div>
+        <div class="message-content">
+          Hey there! I'm CineBot. Ask me anything about movies - plot explanations, character analysis, fan theories, or
+          fun "what if" scenarios like "What if 'ABC' character survived?"
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="suggestions">
+        <span class="suggestion-chip" onclick="sendQuick('What if Thanos won in Endgame?')">What if Thanos won?</span>
+        <span class="suggestion-chip" onclick="sendQuick('Explain the ending of Inception')">Inception ending</span>
+        <span class="suggestion-chip" onclick="sendQuick('Who is the best Batman actor?')">Best Batman?</span>
+        <span class="suggestion-chip" onclick="sendQuick('What makes a movie a cult classic?')">Cult classics</span>
+      </div>
+
+      <form id="chatForm" class="input-container">
+        <textarea id="userPrompt" placeholder="Ask CineBot anything about movies..." rows="1"></textarea>
+        <button type="submit" id="sendBtn">
+          <i class="fas fa-paper-plane"></i>
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+  <script src="chat.js"></script>
+</body>
+
+</html>

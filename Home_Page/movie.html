@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie — CineVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="movie.css">
+<!-- Chart.js loaded locally so graphs always work even without internet -->
+<script src="chart.min.js"></script>
+<script>
+  if (typeof Chart === "undefined") {
+    // Fallback to CDN if local file somehow missing
+    document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"><\/script>');
+  }
+</script>
+</head>
+<body>
+
+<!-- BACKDROP -->
+<div id="backdrop" class="backdrop"></div>
+
+<div class="movie-container">
+    <!-- LEFT SIDE -->
+    <div class="left">
+        <h1 class="movie-title">
+            <span id="movieTitle"></span>
+            <span id="movieYear" class="movie-year"></span>
+        </h1>
+        <p class="director">
+            Directed by <span id="movieDirector">Unknown</span>
+        </p>
+        <p class="genres">
+            Genres: <span id="movieGenres">N/A</span>
+        </p>
+        <h3 class="section-label">Synopsis</h3>
+        <p id="movieOverview" class="synopsis">
+            No synopsis available.
+        </p>
+    </div>
+
+    <!-- POSTER -->
+    <div class="poster-box">
+        <img id="moviePoster" class="poster-img" src="" alt="Movie Poster">
+    </div>
+</div>
+
+<!-- CHATBOT -->
+<div id="pageMessage" class="message" style="display:none;"></div>
+<div class="chat-section">
+    <div class="chat-section-header">
+        <span class="chat-icon">🤖</span>
+        <div>
+            <h2>Talk to CineBot about this movie</h2>
+            <p class="chat-header-sub">Ask about plot, characters, what-if scenarios, predictions...</p>
+        </div>
+    </div>
+
+    <div id="chatWindow" class="chat-window"></div>
+    <form id="chatForm" class="chat-form">
+        <textarea id="userPrompt"
+            placeholder="e.g. &quot;What if Iron Man survived?&quot; or &quot;Explain the ending&quot; (Shift+Enter for new line)"
+            rows="2"
+        ></textarea>
+        <button type="submit" id="analyzeBtn" title="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+    </form>
+</div>
+
+<!-- GRAPHS -->
+<div class="graphs-wrapper">
+    <div class="graph-card">
+        <h3>Original movie emotion</h3>
+        <canvas id="originalGraph"></canvas>
+    </div>
+    <div class="graph-card" id="userGraphCard" style="display:none;">
+        <h3>Your story emotion</h3>
+        <canvas id="userGraph"></canvas>
+    </div>
+</div>
+
+<!-- BACK LINK -->
+<p class="back-link">
+    <a href="index_home.html">&larr; Back to Home</a>
+</p>
+
+<script src="movie.js"></script>
+</body>
+</html>

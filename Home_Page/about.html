@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About • CineVerse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Bebas+Neue&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #050505;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    .navbar a:hover,
+    .navbar a.active {
+      color: #f5c518;
+      text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    }
+
+    .container {
+      padding: 80px 60px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(245, 197, 24, 0.15) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      color: #fff;
+      margin-bottom: 30px;
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #f5c518, #ff6b6b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 20px;
+      color: #bbb;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 60px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 20px;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .feature-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    .feature-card p {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index_home.html">Home</a>
+    <a href="http://127.0.0.1:5173">MoodMatcher</a>
+    <a href="about.html" class="active">About</a>
+    <a href="chat.html">Chatbot</a>
+    <a href="movies.html">Movies</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main class="container">
+    <h1>About CineVerse</h1>
+    <p>CineVerse is a premium, AI-powered movie discovery space built as a final-year project. It goes beyond simple
+      browsing by bringing you deep insights, emotion analytics, and an intelligent ChatBot.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎬</div>
+        <h3>Discover Films</h3>
+        <p>Browse through an extensive, hand-picked collection of trending films, top rated classics, and hidden gems.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI CineBot</h3>
+        <p>Talk to our intelligent AI to analyze plots, ask "what-if" scenarios, and deeply understand your favorite
+          movies.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Emotion Analytics</h3>
+        <p>Visually see the emotional profile of any movie or scenario with our unique radar graph analysis.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✨</div>
+        <h3>MoodMatcher</h3>
+        <p>Let your emotion guide tonight's film. CineBot reads your mood and recommends perfect stories.</p>
+      </div>
+    </div>
+  </main>
+
+</body>
+
+</html>

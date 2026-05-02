@@ -1,9 +1,5 @@
 /* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body, html {
   height: 100%;
@@ -12,180 +8,224 @@ body, html {
   background-color: #000;
 }
 
-/* ----- Video Banner ----- */
-.video-header {
+/* ----- HERO VIDEO (full 75vh) ----- */
+.hero {
   position: relative;
   width: 100%;
-  height: 35vh; /* banner height */
+  height: 75vh;
   overflow: hidden;
 }
 
 #bg-video {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   object-fit: cover;
 }
 
-/* ----- Navigation Bar ----- */
+/* Title on video */
+.cineverse-title {
+  position: absolute;
+  top: 25px; left: 50px;
+  font-size: 64px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  z-index: 10;
+  letter-spacing: 2px;
+}
+
+/* --------------------------------- */
+/* ----------- NAVBAR FIX ---------- */
+/* --------------------------------- */
+
 .navbar {
-  left: 0;
   width: 100%;
+  padding: 18px 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 80px;
-  z-index: 10;
+
+  /* Navbar MUST NOT overlap hero */
   position: relative;
+  background: linear-gradient(90deg, #111, #000);     /* subtle gradient */
+  z-index: 20;
 }
 
-/* ----- NAV SEARCH (with icon) ----- */
-.nav-search {
-  position: relative;
-  display: inline-block;
-}
+/* Left Search */
+.nav-left { display: flex; align-items: center; gap: 16px; }
+
+.nav-search { position: relative; }
 
 .nav-search input {
-  padding: 8px 35px 8px 14px; /* add right padding for icon */
+  padding: 8px 34px 8px 12px;
   width: 260px;
-  border-radius: 5px;
+  border-radius: 6px;
   border: none;
   outline: none;
-  font-size: 14px;
+  background: #111;
+  color: #fff;
 }
 
-/* Add search icon inside input */
 .nav-search::after {
-  content: "\f002"; /* Font Awesome search icon */
-  font-family: "Font Awesome 6 Free"; /* ensure FA6 is loaded in HTML */
+  content: "\f002";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
   color: #888;
-  pointer-events: none; /* allows typing without blocking input */
+  pointer-events: none;
   font-size: 14px;
 }
 
-/* RIGHT MENU */
-.nav-links {
-  display: flex;
-  gap: 30px;
+/* Right Navbar Links */
+.nav-links { display: flex; gap: 28px; }
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+  position: relative;
+  padding: 6px 10px;
+  transition: color .3s;
 }
 
-/* ---- Search Suggestion Box ---- */
-.nav-search { position: relative; 
-display: inline-block; }
+/* underline animation */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: #f5c518;
+  transition: width .3s;
+}
 
+.nav-links a:hover { color: #f5c518; }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: #f5c518; }
+
+/* Suggestions dropdown */
 .suggest-box {
   position: absolute;
-  top: 38px;         /* place under the input (adjust if you changed input height) */
-  left: 0;
-  background: #111;
-  color: #fff;
-  width: 260px;
-  max-height: 300px;
+  top: 40px; left: 0;
+  width: 320px;
+  max-height: 320px;
   overflow-y: auto;
-  border: 1px solid #333;
-  margin-top: 6px;
-  border-radius: 5px;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 6px;
   display: none;
-  z-index: 99999;
+  z-index: 9999;
 }
 
 .suggest-item {
   padding: 10px;
   cursor: pointer;
+  color: #fff;
   border-bottom: 1px solid #222;
 }
 
-.suggest-item:hover {
-  background: #333;
+.suggest-item:hover { background: #222; }
+
+/* ----- MOVIE SECTION ----- */
+.movies-section {
+  padding: 36px 60px 80px;
+  min-height: 40vh;
 }
 
-.nav-links a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 500;
-  transition: color 0.3s ease;
+/* Poster Grid */
+#posterGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 28px;
+  align-items: start;
+  justify-items: center;
+  padding: 12px 0;
 }
 
-.nav-links a:hover {
-  color: #f5c518;
+/* Poster Card */
+.poster {
+  width: 100%;
+  max-width: 220px;
+  cursor: pointer;
 }
 
-/* --- Cineverse Title (Logo) --- */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap');
-
-.hero {
-  position: relative; /* important for positioning */
+.poster img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #111, #000);
+  display: block;
 }
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 40px;
-}
-
-.nav-links li a {
-  text-decoration: none;
-  color: #e5e5e5;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-links li a:hover {
-  color: #ffcc00;
-}
-
-/* ----- Content Section ----- */
-.content {
+.poster-title {
+  margin-top: 8px;
+  font-size: 14px;
   text-align: center;
-  margin-top: 45vh;
-  padding: 60px;
-  max-width: 800px;
-  margin-inline: auto;
+  color: #fff;
 }
 
-.content h1 {
-  font-size: 2rem;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+/* ----- Pagination ----- */
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 28px;
+  flex-wrap: wrap;
 }
 
-.content p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #ccc;
+.page-btn {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all .25s;
 }
 
-#welcome-toast {
-  position: fixed;
-  top: 80px;
-  right: 30px;
-  background: rgba(255, 255, 255, 0.9);
+.page-btn.active {
+  background: #f5c518;
   color: #111;
-  font-weight: 500;
-  padding: 12px 18px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  transform: translateY(-10px);
-  z-index: 9999;
+  font-weight: 700;
+  border-color: #f5c518;
 }
 
-#welcome-toast.show {
-  opacity: 1;
-  transform: translateY(0);
+.page-btn:hover { transform: translateY(-2px); }
+
+/* Status / messages */
+.message {
+  text-align: center;
+  color: #bbb;
+  margin-top: 40px;
+  font-size: 15px;
 }
 
-#welcome-toast.hidden {
-  opacity: 0;
-  transform: translateY(-10px);
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .cineverse-title { left: 20px; font-size: 44px; }
+
+  .navbar {
+    padding: 14px 16px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  #posterGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 18px;
+  }
+
+  .poster img { height: 220px; }
+
+  .nav-search input { width: 200px; }
 }

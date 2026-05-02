@@ -1,21 +1,21 @@
-# generate_cache_full.py
-# Put this file inside your backend folder (same folder as tmdb_app.py)
-# Usage: python generate_cache_full.py
-# This will create ../Home_Page/movies_cache.json (incrementally saved while running).
-
 import os
 import time
 import json
 from collections import OrderedDict
 
 # Import existing helpers from your backend (tmdb_get handles retries)
-from tmdb_app import tmdb_get
+try:
+    from tmdb_app import tmdb_get
+except ImportError:
+    from backend.tmdb_app import tmdb_get
 
 # CONFIG
 TARGET_COUNT = 20000         # target number of unique movies to collect
 CHECKPOINT_EVERY = 500       # write an incremental checkpoint every N new movies
-OUTPUT_PATH = os.path.join("..", "Home_Page", "movies_cache.json")
-TMP_CHECKPOINT = os.path.join("..", "Home_Page", "movies_cache_checkpoint.json")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "Home_Page", "movies_cache.json")
+TMP_CHECKPOINT = os.path.join(PROJECT_ROOT, "Home_Page", "movies_cache_checkpoint.json")
 SLEEP_BETWEEN_REQUESTS = 0.25  # seconds (tweak if you receive 429s)
 
 # Helper: normalize movie dict to a compact object we store
@@ -43,6 +43,7 @@ if os.path.exists(TMP_CHECKPOINT):
 # Small helper to save checkpoint / final
 def save_checkpoint(path):
     arr = list(movies_map.values())
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(arr, f, indent=2, ensure_ascii=False)
     print(f"Saved {len(arr)} movies -> {path}")

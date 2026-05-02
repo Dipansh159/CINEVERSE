@@ -1,6 +1,5 @@
 Flask
-Flask-SQLAlchemy
+Flask-Cors
 python-dotenv
 requests
-cd backend
-python -m pip install -r requirements.txt
+transformers

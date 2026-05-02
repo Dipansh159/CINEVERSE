@@ -1,0 +1,41 @@
+def clean_movie(m):
+    """Convert raw TMDB movie to the frontend shape with full details."""
+
+    if not m:
+        return None
+
+    movie_id = m.get("id")
+    if not movie_id:
+        return None
+
+    # Fetch full movie details (includes genres + credits)
+    details = tmdb_get(f"/movie/{movie_id}", {
+        "append_to_response": "credits",
+        "language": "en-US"
+    })
+
+    if not details:
+        return None
+
+    # Extract director from credits
+    director = "Unknown"
+    credits = details.get("credits", {})
+    for crew_member in credits.get("crew", []):
+        if crew_member.get("job") == "Director":
+            director = crew_member.get("name")
+            break
+
+    # Extract genres
+    genres = [g["name"] for g in details.get("genres", [])]
+
+    return {
+        "tmdb_id": movie_id,
+        "title": details.get("title"),
+        "release_date": details.get("release_date"),
+        "rating": details.get("vote_average"),
+        "overview": details.get("overview"),
+        "director": director,
+        "genres": genres,
+        "poster_url": POSTER_BASE + details["poster_path"] if details.get("poster_path") else None,
+        "backdrop_url": BACKDROP_BASE + details["backdrop_path"] if details.get("backdrop_path") else None,
+    }
