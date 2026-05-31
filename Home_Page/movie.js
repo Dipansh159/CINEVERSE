@@ -290,7 +290,8 @@ async function handleChatSubmit(event) {
     chatHistory.push({ role: "assistant", content: reply });
     
     // Get emotion for this new scenario
-    const scenarioEmotion = await analyzeEmotionViaBackend(reply, currentMovie.genres);
+    const combinedText = `User Prompt: ${prompt}\n\nChatbot Answer: ${reply}`;
+    const scenarioEmotion = await analyzeEmotionViaBackend(combinedText, currentMovie.genres);
     if (scenarioEmotion) {
       const userGraphCard = document.getElementById("userGraphCard");
       if (userGraphCard) userGraphCard.style.display = "block";

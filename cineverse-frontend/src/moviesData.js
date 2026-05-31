@@ -14,7 +14,7 @@ export const moviesData = {
                 "match": "98%",
                 "desc": "A jazz pianist falls for an aspiring actress in Los Angeles.",
                 "reason": "Pure cinematic joy with dazzling musical numbers.",
-                "img": "https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0O5J.jpg"
+                "img": "images/lalaland.jpg"
             },
             {
                 "id": 2,
@@ -26,7 +26,7 @@ export const moviesData = {
                 "match": "95%",
                 "desc": "Am\u00e9lie is an innocent girl in Paris with her own sense of justice.",
                 "reason": "A whimsical tale of finding joy in little things.",
-                "img": "https://image.tmdb.org/t/p/w500/mWhws1ZkXkEbsD2rD1I1OimS7uV.jpg"
+                "img": "images/amelie.jpg"
             },
             {
                 "id": 3,
@@ -38,7 +38,7 @@ export const moviesData = {
                 "match": "94%",
                 "desc": "Paddington takes up a job to buy a pop-up book.",
                 "reason": "Radiating pure kindness and infectious happiness.",
-                "img": "https://image.tmdb.org/t/p/w500/kKROA5YpS2k05AOWU9sM55ZhefE.jpg"
+                "img": "images/Paddington_2.jpg"
             },
             {
                 "id": 4,
@@ -50,7 +50,7 @@ export const moviesData = {
                 "match": "92%",
                 "desc": "Teen Miles Morales becomes the Spider-Man of his universe.",
                 "reason": "A visually stunning and deeply joyful superhero journey.",
-                "img": "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg"
+                "img": "images/spidermen.jpg"
             },
             {
                 "id": 5,
@@ -62,7 +62,7 @@ export const moviesData = {
                 "match": "91%",
                 "desc": "A silent film star falls for a chorus girl.",
                 "reason": "The absolute pinnacle of feel-good cinema.",
-                "img": "https://image.tmdb.org/t/p/w500/8g0q2wAOPQ6kQ1h7bQ7D4aHlT.jpg"
+                "img": "images/singinrain.jpg"
             },
             {
                 "id": 6,
@@ -74,7 +74,7 @@ export const moviesData = {
                 "match": "90%",
                 "desc": "Two girls interact with friendly wood spirits.",
                 "reason": "Pure, unadulterated childhood wonder and joy.",
-                "img": "https://image.tmdb.org/t/p/w500/rtGDOeG9LzoerkLSKv5iK2ndgE.jpg"
+                "img": "images/totoro.jpg"
             },
             {
                 "id": 7,
@@ -86,7 +86,7 @@ export const moviesData = {
                 "match": "89%",
                 "desc": "A family road trip to a beauty pageant.",
                 "reason": "Heartwarming and hilarious in equal measure.",
-                "img": "https://image.tmdb.org/t/p/w500/fRtuR2wKpwv55T7zIfbI7l4l2bZ.jpg"
+                "img": "images/littlesunshine.png"
             },
             {
                 "id": 8,
@@ -98,7 +98,7 @@ export const moviesData = {
                 "match": "88%",
                 "desc": "A farmhand must rescue his true love.",
                 "reason": "A delightful, endlessly quotable fairy tale.",
-                "img": "https://image.tmdb.org/t/p/w500/dzjnZk2a0W0iRzJOhP0E7Y2rV0a.jpg"
+                "img": "images/princessbride.jpg"
             },
             {
                 "id": 9,
@@ -110,7 +110,7 @@ export const moviesData = {
                 "match": "87%",
                 "desc": "A rat who can cook makes an unusual alliance with a kitchen worker.",
                 "reason": "A delicious celebration of passion and art.",
-                "img": "https://image.tmdb.org/t/p/w500/npLVcsNJllD1sA0u6J8nEaZpALq.jpg"
+                "img": "images/ratatoulie.png"
             },
             {
                 "id": 10,
@@ -122,7 +122,7 @@ export const moviesData = {
                 "match": "86%",
                 "desc": "The presidencies of Kennedy and Johnson, the Vietnam War, and more from the perspective of an Alabama man.",
                 "reason": "An uplifting testament to a life fully lived.",
-                "img": "https://image.tmdb.org/t/p/w500/saHP97rTPS5eLmrLQEcANmKrsFl.jpg"
+                "img": "images/forrestgump.png"
             }
         ]
     },
@@ -154,7 +154,7 @@ export const moviesData = {
                 "match": "96%",
                 "desc": "A TV network exploits a deranged former anchors ravings.",
                 "reason": "I am mad as hell, and I am not going to take this anymore!",
-                "img": "https://image.tmdb.org/t/p/w500/pLfw8X9z3t5E55hXq7XyOItf9m2.jpg"
+                "img": "/images/network.jpg"
             },
             {
                 "id": 3,
@@ -166,7 +166,7 @@ export const moviesData = {
                 "match": "95%",
                 "desc": "An ex-hit-man tracks down the gangsters that killed his dog.",
                 "reason": "Pure, distilled vengeance fueled by unstoppable rage.",
-                "img": "https://image.tmdb.org/t/p/w500/wkt91r1x1R0i63P0kZJ3wzE5zWn.jpg"
+                "img": "/images/johnwick.jpg"
             },
             {
                 "id": 4,
@@ -214,7 +214,7 @@ export const moviesData = {
                 "match": "92%",
                 "desc": "Racial tension builds in a Brooklyn neighborhood on the hottest day of summer.",
                 "reason": "A boiling pot of righteous, necessary anger.",
-                "img": "https://image.tmdb.org/t/p/w500/yAooofX1P3e3QkUty4n4g7P1q4J.jpg"
+                "img": "/images/rightthing.jpg"
             },
             {
                 "id": 8,
@@ -226,7 +226,7 @@ export const moviesData = {
                 "match": "91%",
                 "desc": "A former Roman General sets out to exact vengeance.",
                 "reason": "Epic, visceral vengeance and enduring fury.",
-                "img": "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvq0.jpg"
+                "img": "/images/gladiator.jpg"
             },
             {
                 "id": 9,
@@ -238,7 +238,7 @@ export const moviesData = {
                 "match": "89%",
                 "desc": "A masked freedom fighter known as V fights a totalitarian government.",
                 "reason": "A passionate and angry cry against fascism.",
-                "img": "https://image.tmdb.org/t/p/w500/vQqyeb1NnvKibH5Nls9P07pY1R8.jpg"
+                "img": "/images/v.jpg"
             },
             {
                 "id": 10,
@@ -250,7 +250,7 @@ export const moviesData = {
                 "match": "87%",
                 "desc": "After awakening from a four-year coma, a former assassin wreaks vengeance.",
                 "reason": "A stylish, relentless bloodbath fueled by betrayal.",
-                "img": "https://image.tmdb.org/t/p/w500/v7TaX8kXzHq2mP4H7bQvKxI1bJ.jpg"
+                "img": "/images/killbill.jpg"
             }
         ]
     },
@@ -269,7 +269,7 @@ export const moviesData = {
                 "match": "97%",
                 "desc": "An uncle cares for his teenage nephew after his brother dies.",
                 "reason": "An unflinching, powerful look at grief and enduring sorrow.",
-                "img": "https://image.tmdb.org/t/p/w500/p40x794rT2hCioHInB1vB2S6eXg.jpg"
+                "img": "images/manchesterbythesea.jpg"
             },
             {
                 "id": 2,
@@ -281,7 +281,7 @@ export const moviesData = {
                 "match": "95%",
                 "desc": "Oskar Schindler becomes concerned for his Jewish workforce.",
                 "reason": "A devastating masterpiece confronting humanity\u2019s darkest hours.",
-                "img": "https://image.tmdb.org/t/p/w500/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg"
+                "img": "images/schindler'slist.jpg"
             },
             {
                 "id": 3,
@@ -305,7 +305,7 @@ export const moviesData = {
                 "match": "96%",
                 "desc": "Two siblings struggle to survive in Japan during WWII.",
                 "reason": "One of the most profoundly heartbreaking films ever made.",
-                "img": "https://image.tmdb.org/t/p/w500/qG3RYlIVpTYclR9cKVVqCRDkOQ.jpg"
+                "img": "images/fireflies.jpg"
             },
             {
                 "id": 5,
@@ -317,7 +317,7 @@ export const moviesData = {
                 "match": "94%",
                 "desc": "A couple undergo a procedure to erase each other from their memories.",
                 "reason": "A beautiful, melancholic look at the pain of lost love.",
-                "img": "https://image.tmdb.org/t/p/w500/5MwkWH9tx75G6BabmM5zB21y1P0.jpg"
+                "img": "images/sunshine.jpg"
             },
             {
                 "id": 6,
@@ -329,7 +329,7 @@ export const moviesData = {
                 "match": "92%",
                 "desc": "A man refuses assistance from his daughter as he ages.",
                 "reason": "A devastating portrayal of memory loss and aging.",
-                "img": "https://image.tmdb.org/t/p/w500/1Xdd32t2f180q9mI5eInbY4aL1R.jpg"
+                "img": "images/father.jpg"
             },
             {
                 "id": 7,
@@ -341,7 +341,7 @@ export const moviesData = {
                 "match": "91%",
                 "desc": "A deceased husband remains to watch over his grieving wife.",
                 "reason": "A quiet, existential exploration of time and lingering sadness.",
-                "img": "https://image.tmdb.org/t/p/w500/tLia0RarX17n0aYV9pYt0Yc8yP3.jpg"
+                "img": "images/ghoststory.jpg"
             },
             {
                 "id": 8,
@@ -353,7 +353,7 @@ export const moviesData = {
                 "match": "90%",
                 "desc": "A secret and tragic romance between two cowboys.",
                 "reason": "A deeply aching tale of forbidden love and regret.",
-                "img": "https://image.tmdb.org/t/p/w500/vQikEw2S82RXXa71gW2rR3T05O.jpg"
+                "img": "images/mountain.jpg"
             },
             {
                 "id": 9,
@@ -365,7 +365,7 @@ export const moviesData = {
                 "match": "88%",
                 "desc": "A deformed man is rescued from a freak show.",
                 "reason": "A tragic and incredibly moving testament to human dignity.",
-                "img": "https://image.tmdb.org/t/p/w500/eP49P5e2xTj82Xb1x1P2xT2V.jpg"
+                "img": "images/elephantman.jpg"
             },
             {
                 "id": 10,
@@ -377,7 +377,7 @@ export const moviesData = {
                 "match": "87%",
                 "desc": "Two sisters relations are strained as a rogue planet approaches Earth.",
                 "reason": "A stunning visual metaphor for deep clinical depression.",
-                "img": "https://image.tmdb.org/t/p/w500/xZ1P1Q62J9wJ3R8m0QW3m8gA.jpg"
+                "img": "images/melancholie.jpg"
             }
         ]
     },
@@ -396,7 +396,7 @@ export const moviesData = {
                 "match": "98%",
                 "desc": "A family heads to an isolated hotel for the winter.",
                 "reason": "A masterclass in dread and psychological terror.",
-                "img": "https://image.tmdb.org/t/p/w500/x2OJBkZqf11bYFhWpINfQpA5hM9.jpg"
+                "img": "images/shinging.jpg"
             },
             {
                 "id": 2,
@@ -408,7 +408,7 @@ export const moviesData = {
                 "match": "96%",
                 "desc": "A commercial spacecraft encounter a deadly lifeform.",
                 "reason": "Claustrophobic, relentless, and truly terrifying.",
-                "img": "https://image.tmdb.org/t/p/w500/vfrQk5PIZpkE04xQjPIyy1Z6i00.jpg"
+                "img": "images/aliens.jpg"
             },
             {
                 "id": 3,
@@ -420,7 +420,7 @@ export const moviesData = {
                 "match": "94%",
                 "desc": "A grieving family is haunted by tragic occurrences.",
                 "reason": "A deeply unsettling modern horror classic.",
-                "img": "https://image.tmdb.org/t/p/w500/4gC2A1P32sR4j08qYf3r2P0396X.jpg"
+                "img": "images/hereditary.jpg"
             },
             {
                 "id": 4,
@@ -432,7 +432,7 @@ export const moviesData = {
                 "match": "95%",
                 "desc": "Researchers in Antarctica are hunted by a shape-shifting alien.",
                 "reason": "Paranoia and isolation distilled into pure fear.",
-                "img": "https://image.tmdb.org/t/p/w500/tzgjTvgJZItcs7L2qHlqT8YfPq.jpg"
+                "img": "images/thing.jpg"
             },
             {
                 "id": 5,
@@ -444,7 +444,7 @@ export const moviesData = {
                 "match": "93%",
                 "desc": "A young African-American visits his white girlfriend's parents.",
                 "reason": "A brilliant, tension-filled masterpiece of social horror.",
-                "img": "https://image.tmdb.org/t/p/w500/tX6WnWJb1g6o1Z1D3U7t9UaXmX.jpg"
+                "img": "images/getout.jpg"
             },
             {
                 "id": 6,
@@ -456,7 +456,7 @@ export const moviesData = {
                 "match": "92%",
                 "desc": "A secretary ends up at a secluded motel.",
                 "reason": "The film that invented the modern slasher.",
-                "img": "https://image.tmdb.org/t/p/w500/cWcOExqTjXq1yT3U8zT6T1Q4U3V.jpg"
+                "img": "images/psycho.jpg"
             },
             {
                 "id": 7,
@@ -468,7 +468,7 @@ export const moviesData = {
                 "match": "91%",
                 "desc": "A teenage girl is possessed by a mysterious entity.",
                 "reason": "A visceral, shocking battle between good and evil.",
-                "img": "https://image.tmdb.org/t/p/w500/4nQpdD3Cj7bH0zG8tD5p4U3M8vO.jpg"
+                "img": "images/exorcist.jpg"
             },
             {
                 "id": 8,
@@ -480,7 +480,7 @@ export const moviesData = {
                 "match": "90%",
                 "desc": "A family must live in silence to hide from monsters.",
                 "reason": "A nerve-wracking exercise in tension and silence.",
-                "img": "https://image.tmdb.org/t/p/w500/nAU74GmpUk7t5jcSQeRM51H5VlP.jpg"
+                "img": "images/quietplace.jpg"
             },
             {
                 "id": 9,
@@ -492,7 +492,7 @@ export const moviesData = {
                 "match": "89%",
                 "desc": "A single mother battles her son's fear of a monster.",
                 "reason": "A creeping, psychological terror born from grief.",
-                "img": "https://image.tmdb.org/t/p/w500/e9C1X1XhX81X9cE2h2E8V5K3V3h.jpg"
+                "img": "images/badadook.jpg"
             },
             {
                 "id": 10,
@@ -504,7 +504,7 @@ export const moviesData = {
                 "match": "88%",
                 "desc": "A pregnant woman suspects her neighbors are part of a cult.",
                 "reason": "A slow-burn descent into paranoia and terror.",
-                "img": "https://image.tmdb.org/t/p/w500/a2uE2rGz2N0Z3Q8E9U7b8U9Yp0X.jpg"
+                "img": "images/rosemary.jpg"
             }
         ]
     },
@@ -662,7 +662,7 @@ export const moviesData = {
                 "match": "95%",
                 "desc": "A promising young drummer is pushed to his limits.",
                 "reason": "Intense, demanding, and utterly nerve-wracking.",
-                "img": "/images/whiplash.jpg"
+                "img": "images/whiplash.png"
             },
             {
                 "id": 3,

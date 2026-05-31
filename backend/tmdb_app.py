@@ -3,6 +3,7 @@ import re
 import json
 import concurrent.futures
 import requests
+import random
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from requests.adapters import HTTPAdapter, Retry
@@ -29,15 +30,15 @@ if _gemini_available:
 else:
     print("GENAI_API_KEY not set — will use Ollama fallback.")
 
-TMDB_BASE = "https://api.themoviedb.org/3"
-POSTER_BASE = "https://image.tmdb.org/t/p/w500"
-BACKDROP_BASE = "https://image.tmdb.org/t/p/w780"
+TMDB_BASE = "https://api.tmdb.org/3"
+POSTER_BASE = "https://wsrv.nl/?url=image.tmdb.org/t/p/w500"
+BACKDROP_BASE = "https://wsrv.nl/?url=image.tmdb.org/t/p/w780"
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 _session = requests.Session()
-_retries = Retry(total=3, backoff_factor=0.6, status_forcelist=[429, 500, 502, 503, 504])
+_retries = Retry(total=1, backoff_factor=0.3, status_forcelist=[429, 500, 502, 503, 504])
 _session.mount("https://", HTTPAdapter(max_retries=_retries))
 
 EMOTION_MODEL_AVAILABLE = None
@@ -52,7 +53,7 @@ def tmdb_get(path, params=None):
 
     params = {**(params or {}), "api_key": TMDB_API_KEY}
     try:
-        response = _session.get(TMDB_BASE + path, params=params, timeout=15)
+        response = _session.get(TMDB_BASE + path, params=params, timeout=3)
         response.raise_for_status()
         return response.json()
     except Exception as exc:
@@ -103,12 +104,12 @@ def clean_movie(movie):
     }
 
 
-def fetch_list(path, extra=None, max_items=20):
+def fetch_list(path, extra=None, max_items=20, max_pages=5):
     """Fetch a movie list without triggering extra per-movie detail requests."""
     movies = []
     page = 1
 
-    while len(movies) < max_items and page <= 5:
+    while len(movies) < max_items and page <= max_pages:
         data = tmdb_get(path, {"language": "en-US", "page": page, **(extra or {})})
         results = data.get("results", [])
         if not results:
@@ -350,22 +351,23 @@ def ask_ollama(question, movie_context=None, history=None):
 
 
 def ask_cinebot(question, movie_context=None, history=None):
-    """Try Gemini first with a hard timeout. Fast-fail on error — no Ollama wait."""
+    """Try Gemini first with a hard timeout. Fall back to Ollama on failure."""
     if _gemini_available:
         try:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
                 fut = ex.submit(ask_gemini, question, movie_context, history)
                 return fut.result(timeout=20)
         except concurrent.futures.TimeoutError:
-            print("Gemini timed out (>20s).")
-            return "I'm taking a bit too long right now — please try sending your message again."
+            print("Gemini timed out (>20s). Falling back to Ollama.")
         except Exception as exc:
-            print(f"Gemini error: {exc}")
-            return "I ran into a connection issue. Please try again — it usually resolves quickly."
-    # Ollama: only used when Gemini API key is not set at all
+            print(f"Gemini error: {exc}. Falling back to Ollama.")
+
+    # Try local Ollama as fallback
     try:
         return ask_ollama(question, movie_context=movie_context, history=history)
     except RuntimeError as exc:
+        if _gemini_available:
+            return "I ran into a connection issue. Please make sure local Ollama is running and try again."
         return f"❌ {exc}"
 
 
@@ -419,12 +421,28 @@ def section_trending():
 
 @app.route("/api/section/top_rated")
 def section_top_rated():
+    limit = int(request.args.get("limit", 20))
+    pages = (limit // 20) + (1 if limit % 20 > 0 else 0)
     return jsonify({"results": fetch_list("/discover/movie", {
         "sort_by": "vote_average.desc",
         "vote_count.gte": 3000,
         "include_adult": False,
-    })})
+    }, max_items=limit, max_pages=pages)})
 
+
+@app.route("/api/random_movies")
+def random_movies():
+    page = random.randint(1, 100)
+    results = fetch_list("/discover/movie", {
+        "sort_by": "popularity.desc",
+        "vote_count.gte": 300,
+        "include_adult": False,
+        "page": page
+    })
+    with_posters = [m for m in results if m.get("poster_url")]
+    random.shuffle(with_posters)
+    selected = with_posters[:2] if len(with_posters) >= 2 else with_posters
+    return jsonify({"results": selected})
 
 @app.route("/api/section/popular")
 def section_popular():
@@ -437,11 +455,13 @@ def section_popular():
 
 @app.route("/api/section/imdb_top")
 def section_imdb_top():
+    limit = int(request.args.get("limit", 20))
+    pages = (limit // 20) + (1 if limit % 20 > 0 else 0)
     return jsonify({"results": fetch_list("/discover/movie", {
         "sort_by": "vote_average.desc",
         "vote_count.gte": 25000,
         "include_adult": False,
-    })})
+    }, max_items=limit, max_pages=pages)})
 
 
 @app.route("/api/movie/<int:tmdb_id>")
@@ -553,6 +573,198 @@ def genre_based_emotions(genres):
     return totals
 
 
+_EMOTION_KEYWORDS = {
+    "joy": ["joy", "happy", "happily", "glad", "celebrate", "celebration", "victory", "win", "won", "triumph", "successful", "success", "peace", "peaceful", "cheerful", "delight", "delighted", "wonderful", "smile", "smiling", "laugh", "laughing", "love", "loved", "friendly", "hope", "hopeful", "survive", "survival", "survivor", "live", "safe", "safety", "rescue", "alive"],
+    "sadness": ["sad", "sadness", "sorrow", "grief", "grieve", "mourn", "mourning", "cry", "crying", "weep", "tears", "loss", "lost", "fail", "failed", "failure", "defeat", "defeated", "tragedy", "tragic", "death", "die", "died", "dying", "kill", "killed", "grave", "funeral", "depressed", "depression", "lonely", "melancholy", "pain", "hurt", "destroy", "destroyed", "destruction", "ruin", "ruined", "doom", "doomed", "catastrophe", "catastrophic", "hopeless"],
+    "fear": ["fear", "fearful", "afraid", "scared", "fright", "frightened", "terrify", "terrified", "terror", "dread", "dreaded", "panic", "panicked", "anxious", "anxiety", "worry", "worried", "nervous", "horror", "monster", "threat", "threaten", "threatened", "danger", "dangerous", "dark", "darkness", "shadow", "creepy", "ghost", "nightmare", "run away", "escape", "hide", "hiding"],
+    "anger": ["anger", "angry", "rage", "fury", "furious", "mad", "hate", "hatred", "despise", "resent", "resentment", "enemy", "foes", "fight", "fighting", "battle", "war", "conflict", "strike", "revenge", "vengeance", "attack", "attacking", "oppress", "oppression", "betray", "betrayal", "venom", "hostile", "hostility"],
+    "surprise": ["surprise", "surprised", "shock", "shocked", "astonish", "astonished", "amaze", "amazed", "wonder", "unexpected", "sudden", "suddenly", "reveal", "revealed", "discovery", "discovered", "twist", "unbelievable", "startle", "startled"],
+    "disgust": ["disgust", "disgusted", "gross", "nasty", "recoil", "repel", "repulsed", "revolt", "revolting", "vile", "sick", "sickening", "rotten", "decay", "filth", "filthy", "ugly", "hatred", "despise", "loathe", "loathing"]
+}
+
+def apply_emotion_overrides(scores, text):
+    text_lower = (text or "").lower()
+    
+    # 1. Positive/Survival overrides (must run first so survival stories are not overridden by generic disaster talk)
+    positive_indicators = ["survived", "all survived", "everyone survived", "never sunk", "didnt sink", "didn't sink", "saved", "victory", "won"]
+    if any(ind in text_lower for ind in positive_indicators):
+        scores["joy"] = min(95, max(75, scores.get("joy", 0) + 40))
+        scores["sadness"] = max(10, int(scores.get("sadness", 0) * 0.25))
+        scores["fear"] = max(10, int(scores.get("fear", 0) * 0.35))
+        scores["anger"] = max(10, int(scores.get("anger", 0) * 0.35))
+        return scores
+        
+    # 2. Negative/Tragic overrides
+    has_negative = False
+    negative_indicators = ["fail", "defeat", "die", "death", "destroy", "conquer", "rule", "enslave", "catastrophe", "apocalypse"]
+    for ind in negative_indicators:
+        if re.search(r'\b' + re.escape(ind) + r'\w*\b', text_lower):
+            has_negative = True
+            break
+            
+    if not has_negative:
+        phrases = ["loki wins", "avengers fail", "avengers failed"]
+        for p in phrases:
+            if p in text_lower:
+                has_negative = True
+                break
+                
+    if has_negative:
+        scores["joy"] = max(5, int(scores.get("joy", 0) * 0.15))
+        scores["sadness"] = min(95, max(75, scores.get("sadness", 0)))
+        scores["fear"] = min(95, max(70, scores.get("fear", 0)))
+        scores["anger"] = min(95, max(65, scores.get("anger", 0)))
+        
+    return scores
+
+def heuristic_emotion_analysis(text):
+    text_lower = text.lower()
+    scores = {"joy": 0, "sadness": 0, "fear": 0, "anger": 0, "surprise": 0, "disgust": 0}
+    
+    # Count occurrences of keywords
+    for emotion, keywords in _EMOTION_KEYWORDS.items():
+        count = 0
+        for kw in keywords:
+            count += len(re.findall(r'\b' + re.escape(kw) + r'\w*', text_lower))
+        scores[emotion] = count
+
+    # Give a default baseline so we don't have zeros
+    baseline = 15
+    for k in scores:
+        scores[k] = baseline + scores[k] * 12
+        
+    # Standardize values
+    max_val = max(scores.values())
+    if max_val > 100:
+        factor = 95.0 / max_val
+        for k in scores:
+            scores[k] = int(scores[k] * factor)
+    else:
+        # Scale up slightly if the max is very low, but keep differences
+        for k in scores:
+            scores[k] = min(100, max(15, scores[k]))
+            
+    # Apply unified overrides
+    scores = apply_emotion_overrides(scores, text)
+        
+    return scores
+
+def sanitize_emotion_response(emotions):
+    if not isinstance(emotions, dict):
+        return None
+    
+    sanitized = {}
+    required_keys = ["joy", "sadness", "fear", "anger", "surprise", "disgust"]
+    
+    # Standardize keys to lowercase
+    lower_emotions = {k.lower(): v for k, v in emotions.items()}
+    
+    for key in required_keys:
+        val = lower_emotions.get(key, 0)
+        try:
+            val = int(float(val))
+            val = max(0, min(100, val))
+        except (ValueError, TypeError):
+            val = 0
+        sanitized[key] = val
+        
+    return sanitized
+
+def post_process_emotions(emotions, text, genres=None):
+    res = sanitize_emotion_response(emotions)
+    if not res:
+        return None
+        
+    if genres:
+        genre_scores = genre_based_emotions(genres)
+        weight_llm = 0.5
+        for k in res:
+            res[k] = int((res[k] * weight_llm) + (genre_scores[k] * (1.0 - weight_llm)))
+    
+    # 1. Apply unified overrides
+    res = apply_emotion_overrides(res, text)
+
+    # 2. Scale up values if the maximum is too low (e.g. under 80)
+    max_val = max(res.values())
+    if 0 < max_val < 80:
+        factor = 80.0 / max_val
+        for k in res:
+            res[k] = min(100, max(10, int(res[k] * factor)))
+            
+    return res
+
+def get_fallback_emotions(text, genres):
+    heuristic_scores = heuristic_emotion_analysis(text)
+    genre_scores = genre_based_emotions(genres)
+    
+    text_stripped = text.strip()
+    # Check if this is the original movie overview (starts with "Movie Title:")
+    # rather than a chatbot scenario prompt/response.
+    is_original_movie = text_stripped.startswith("Movie Title:") and "User Prompt:" not in text_stripped
+    
+    if is_original_movie:
+        # Rely heavily on genre profile for original movies to ensure accurate/vibrant charts
+        weight_text = 0.15
+    elif len(text_stripped) < 30:
+        weight_text = 0.3
+    else:
+        # For chatbot stories, rely heavily on the text content
+        weight_text = 0.85
+        
+    blended = {}
+    for k in ["joy", "sadness", "fear", "anger", "surprise", "disgust"]:
+        blended[k] = round((heuristic_scores[k] * weight_text) + (genre_scores[k] * (1.0 - weight_text)))
+        
+    # Standardize/Scale up values if the maximum is too low (e.g. under 80),
+    # ensuring the radar chart utilizes the full range (dominant emotion reaching ~80)
+    max_val = max(blended.values())
+    if 0 < max_val < 80:
+        factor = 80.0 / max_val
+        for k in blended:
+            blended[k] = min(100, max(10, int(blended[k] * factor)))
+            
+    return blended
+
+def ask_ollama_analyze_emotion(text):
+    prompt = (
+        "Analyze the emotional profile of the following text/story scenario:\n"
+        f"---START TEXT---\n{text}\n---END TEXT---\n\n"
+        "Return ONLY a valid JSON object (no markdown, no explanation, no formatting like ```json) "
+        "with scores from 0 to 100 for these exact keys: "
+        "\"joy\", \"sadness\", \"fear\", \"anger\", \"surprise\", \"disgust\". "
+        "The scores must reflect the emotional tone, themes, and narrative weight of the text. "
+        "For example, if the text describes a dark, tragic, or catastrophic scenario, sadness/fear/anger should be high, and joy should be very low. "
+        "Only output the JSON object itself, e.g. {\"joy\": 10, \"sadness\": 80, ...}."
+    )
+    try:
+        response = _session.post(
+            f"{OLLAMA_HOST}/api/chat",
+            json={
+                "model": OLLAMA_MODEL,
+                "think": False,
+                "stream": False,
+                "messages": [
+                    {"role": "system", "content": "You are a precise emotional analysis tool that outputs ONLY raw JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                "options": {
+                    "temperature": 0.1,
+                    "num_predict": 150,
+                },
+            },
+            timeout=15,
+        )
+        if response.ok:
+            payload = response.json()
+            content = clean_ollama_output(payload.get("message", {}).get("content") or "")
+            json_match = re.search(r'\{[\s\S]*\}', content)
+            if json_match:
+                return json.loads(json_match.group())
+    except Exception as exc:
+        print(f"Ollama emotion analysis failed: {exc}")
+    return None
+
+
 @app.route("/api/analyze", methods=["POST", "OPTIONS"])
 @app.route("/analyze", methods=["POST", "OPTIONS"])
 def analyze():
@@ -563,26 +775,52 @@ def analyze():
     if not data or "text" not in data:
         return jsonify({"error": "No text provided"}), 400
 
-    # Try Gemini REST for deep story-based emotional analysis
+    text = data["text"]
+    genres = data.get("genres", [])
+    if isinstance(genres, str):
+        genres = [g.strip() for g in genres.split(",")]
+
+    text_stripped = text.strip()
+    is_original_movie = text_stripped.startswith("Movie Title:") and "User Prompt:" not in text_stripped
+
+    # For original movie profiles, bypass LLM entirely to guarantee fast loading and perfectly scaled genre-based charts.
+    if is_original_movie:
+        return jsonify(get_fallback_emotions(text, genres))
+
+    # 1. Try Gemini REST for deep story-based emotional analysis
     if _gemini_available:
         try:
             prompt = (
-                f"Analyze the emotional profile of this film based on its story: {data['text']}\n"
-                "Return ONLY a JSON object with scores (0-100) for: joy, sadness, fear, anger, surprise, disgust. "
-                "The scores should reflect the specific narrative weight of these emotions in this movie."
+                "Analyze the emotional profile of the following text/story scenario:\n"
+                f"---START TEXT---\n{text}\n---END TEXT---\n\n"
+                "Analyze the feelings, tone, and narrative weight of the text. "
+                "Return ONLY a valid JSON object (no markdown, no formatting like ```json, no extra text) "
+                "containing scores from 0 to 100 for these exact keys: "
+                "\"joy\", \"sadness\", \"fear\", \"anger\", \"surprise\", \"disgust\". "
+                "The scores must reflect the emotional tone, themes, and narrative weight of the text. "
+                "For example, if the text describes a dark, tragic, or catastrophic scenario, sadness/fear/anger should be high, and joy should be very low."
             )
             raw = _gemini_rest(prompt, temperature=0.1, max_tokens=200)
             json_match = re.search(r'\{[\s\S]*\}', raw)
             if json_match:
-                return jsonify(json.loads(json_match.group()))
+                res = post_process_emotions(json.loads(json_match.group()), text, genres)
+                if res:
+                    return jsonify(res)
         except Exception as e:
-            print(f"Gemini analysis failed, falling back: {e}")
+            print(f"Gemini emotion analysis failed: {e}")
 
-    # Fallback: derive emotion profile from genres if provided
-    genres = data.get("genres", [])
-    if isinstance(genres, str):
-        genres = [g.strip() for g in genres.split(",")]
-    return jsonify(genre_based_emotions(genres))
+    # 2. Try Ollama (Local LLM) as the next fallback
+    try:
+        ollama_res = ask_ollama_analyze_emotion(text)
+        if ollama_res:
+            res = post_process_emotions(ollama_res, text, genres)
+            if res:
+                return jsonify(res)
+    except Exception as e:
+        print(f"Ollama emotion analysis fallback failed: {e}")
+
+    # 3. Last fallback: Heuristic count blended with genre profile
+    return jsonify(get_fallback_emotions(text, genres))
 
 
 @app.route("/api/movie_info", methods=["POST", "OPTIONS"])

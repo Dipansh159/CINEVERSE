@@ -39,6 +39,7 @@ export default function MoodMatcher() {
             <nav className="global-navbar">
                 <a href="http://127.0.0.1:5500/Home_Page/index_home.html">Home</a>
                 <a href="#" className="active">MoodMatcher</a>
+                <a href="/battle">Cine Battle</a>
                 <a href="http://127.0.0.1:5500/Home_Page/about.html">About</a>
                 <a href="http://127.0.0.1:5500/Home_Page/chat.html">Chatbot</a>
                 <a href="http://127.0.0.1:5500/Home_Page/Movies.html">Movies</a>
@@ -68,7 +69,7 @@ export default function MoodMatcher() {
                 — CHOOSE YOUR EMOTION —
             </div>
 
-            {/* ✅ OUTER WRAPPER FOR PERFECT CENTERING */}
+            {/*  OUTER WRAPPER FOR PERFECT CENTERING */}
             <div className="cards-outer">
                 <div className="cards-container">
                     <div className="cards">

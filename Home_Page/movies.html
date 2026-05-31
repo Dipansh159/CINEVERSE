@@ -139,6 +139,35 @@
       color: #ff6b6b;
       font-style: italic;
     }
+
+    .movie-row.grid-view {
+      flex-wrap: wrap;
+      justify-content: center;
+      overflow-x: visible;
+    }
+
+    .see-more-btn {
+      background-color: transparent;
+      color: #f5c518;
+      border: 1px solid #f5c518;
+      padding: 5px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .see-more-btn:hover {
+      background-color: #f5c518;
+      color: #111;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 20px;
+    }
   </style>
 </head>
 
@@ -157,18 +186,26 @@
     <h1>Explore Movies</h1>
     <p class="subtitle">Swipe through curated collections of trending and greatest films.</p>
 
-    <h2 class="section-title" style="border-color: #ff6b6b;">Trending This Week</h2>
+    <div class="section-header">
+      <h2 class="section-title" style="border-color: #ff6b6b;">Trending This Week</h2>
+    </div>
     <div class="movie-row" id="rowTrending"></div>
 
-    <h2 class="section-title" style="border-color: #4facfe;">Top 150 Highest Rated</h2>
+    <div class="section-header">
+      <h2 class="section-title" style="border-color: #4facfe;">Top 150 Highest Rated</h2>
+      <button class="see-more-btn" onclick="loadMore('http://127.0.0.1:5000/api/section/top_rated?limit=150', 'rowRated', 150, this)">See More</button>
+    </div>
     <div class="movie-row" id="rowRated"></div>
 
-    <h2 class="section-title" style="border-color: #cab605;">IMDb Top 150 (Curated)</h2>
+    <div class="section-header">
+      <h2 class="section-title" style="border-color: #cab605;">IMDb Top 150 (Curated)</h2>
+      <button class="see-more-btn" onclick="loadMore('http://127.0.0.1:5000/api/section/imdb_top?limit=150', 'rowImdb', 150, this)">See More</button>
+    </div>
     <div class="movie-row" id="rowImdb"></div>
   </main>
 
   <script>
-    const posterBase = "https://image.tmdb.org/t/p/w500";
+    const posterBase = "https://wsrv.nl/?url=image.tmdb.org/t/p/w500";
 
     function buildCard(m) {
       const targetUrl = m.tmdb_id ? `movie.html?tmdb_id=${m.tmdb_id}` : `movie.html?title=${encodeURIComponent(m.title)}&year=${m.release_date ? m.release_date.slice(0, 4) : ''}`;
@@ -225,8 +262,33 @@
         }
       } catch (err) {
         console.error("Error loading strip:", err);
-        if (row) row.innerHTML = '<p class="message">Could not load movies. Please check your internet connection.</p>';
+        try {
+          // Fallback if network totally failed/timed out
+          const cacheRes = await fetch('movies_cache.json');
+          const cache = await cacheRes.json();
+          row.innerHTML = '';
+          cache.slice(cacheStart, cacheEnd).forEach(m => {
+            row.innerHTML += buildCard(m);
+          });
+          if (!window.warnedTMDB) {
+            console.warn("TMDB API blocked/timed out. Using offline cache.");
+            window.warnedTMDB = true;
+          }
+        } catch (e2) {
+          if (row) row.innerHTML = '<p class="message">Could not load movies. Please check your internet connection.</p>';
+        }
       }
+    }
+
+    async function loadMore(apiUrl, elementId, limit, btn) {
+      if (btn) {
+        btn.textContent = "Loading...";
+        btn.disabled = true;
+      }
+      const row = document.getElementById(elementId);
+      row.classList.add("grid-view");
+      await loadStrip(apiUrl, elementId, limit, 0, limit);
+      if (btn) btn.style.display = 'none';
     }
 
     loadStrip(`http://127.0.0.1:5000/api/section/trending`, "rowTrending", 15, 0, 15);
